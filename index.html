@@ -26,14 +26,75 @@
             max-width: 400px;
             text-align: center;
         }
+        h1 { margin-bottom: 10px; }
+        p { margin-bottom: 20px; font-size: 0.95rem; opacity: 0.9; }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-geo { background: #ff9800; color: #fff; }
+        .btn-geo:hover { background: #e68a00; }
+        .btn-audio { background: #4CAF50; color: #fff; }
+        .btn-audio:hover { background: #45a049; }
+        #status { margin-top: 15px; font-size: 0.85rem; color: #ffeb3b; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Yoka</h1>
         <p>Écouter, avancer, retrouvez-vous.</p>
+        
+        <!-- Bouton de Géolocalisation -->
+        <button class="btn btn-geo" onclick="getLocation()">📍 Trouver ma position</button>
+        
+        <!-- Bouton Audio -->
+        <button class="btn btn-audio" onclick="playAudioGuide()">🔊 Écouter l'aide vocale</button>
+        
+        <div id="status"></div>
     </div>
+
+    <script>
+        // Fonction pour la géolocalisation
+        function getLocation() {
+            const statusDiv = document.getElementById("status");
+            if (!navigator.geolocation) {
+                statusDiv.textContent = "La géolocalisation n'est pas supportée par votre navigateur.";
+                return;
+            }
+            statusDiv.textContent = "Recherche de votre position...";
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    statusDiv.textContent = `Position trouvée ! Latitude : ${lat.toFixed(4)}, Longitude : ${lon.toFixed(4)}`;
+                },
+                () => {
+                    statusDiv.textContent = "Impossible de récupérer votre position.";
+                }
+            );
+        }
+
+        // Fonction pour l'audio (Synthèse vocale du navigateur)
+        function playAudioGuide() {
+            if (!('speechSynthesis' in window)) {
+                alert("La synthèse vocale n'est pas supportée par votre appareil.");
+                return;
+            }
+            const message = new SpeechSynthesisUtterance("Bienvenue sur Yoka. Écouter, avancer, retrouvez-vous.");
+            message.lang = 'fr-FR';
+            window.speechSynthesis.speak(message);
+        }
+    </script>
 </body>
 </html>
+
 
         
